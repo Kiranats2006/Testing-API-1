@@ -31,21 +31,29 @@
 // Purpose:
 // Help teachers retrieve and analyze student performance efficiently.
 
-
 const express = require('express');
 const { resolve } = require('path');
+const data = require('./data.json');
 
 const app = express();
 const port = 3010;
-
+app.use(express.json());
 app.use(express.static('static'));
 
 app.get('/', (req, res) => {
   res.sendFile(resolve(__dirname, 'pages/index.html'));
 });
-
+app.post ('/student/above-threshold',(req,res)=>{
+  const {threshold}= req.body;
+  const reqstudent= data.filter((element)=>{
+    return  element.total>threshold;
+  });
+  return res.send({
+    count: reqstudent.length,
+    students: reqstudent,
+  });
+});
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
-
 
